@@ -29,7 +29,7 @@ struct abc_of_file{
 void read_from_file(string* line,FILE* input);
 void creat_map_of_string(map* abc,string* line);
 void creat_tree_of_Haffman(map_c* main,map* map_of_abc);
-
+void create_arc_file(FILE* file,arc_file* arcFile);
 
 
 
@@ -107,6 +107,11 @@ void write(FILE* archiv,arc* main,int count,char **argv){
         fwrite(str,20,1,archiv);
         free(str);
     }
+
+
+
+
+
     /*Write offset of files*/
     int start=4+20*count;
     for(int i=0;i<count;i++){
@@ -118,17 +123,17 @@ void write(FILE* archiv,arc* main,int count,char **argv){
 }
 
 
-arc_file* create_arc_file(FILE* file){
-    arc_file arcFile;
+void create_arc_file(FILE* file,arc_file* arcFile){
     fseek(file,0,SEEK_SET);
     string original_text;map map_of_abc;map_c reverse_map;
     /*Read information of original file*/
     read_from_file(&original_text,file);
     /*Creat map of sym*/
     creat_map_of_string(&map_of_abc,&original_text);
+    print_map(&map_of_abc);
     /*Creat map of encode string*/
     creat_tree_of_Haffman(&reverse_map,&map_of_abc);
-
+    print_map_c(&reverse_map);
     
 
 

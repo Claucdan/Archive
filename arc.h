@@ -152,7 +152,7 @@ void read_from_file(string* line,FILE* input){
     char* buffer_to_read=(char*) malloc(2);
     buffer_to_read[1]='\0';
     while((buffer_to_read[0]=fgetc(input)) != EOF){
-        push_back(&line,buffer_to_read);
+        push_back(line,buffer_to_read);
     }
 }
 /*Creat map of string*/

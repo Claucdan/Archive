@@ -6,20 +6,20 @@
 #define TEST_C_STRING_H
 
 typedef struct {
-    char* string;
+    unsigned char* string;
     int size;
 }string;
 
-void push_back(string* line,char* sym){
+void push_back(string* line,unsigned char* sym){
     if(line->size!=0){
-        char* tmp=(char*)malloc(strlen(line->string)+1);
+        unsigned char* tmp=(unsigned char*)malloc(strlen(line->string)+1);
         strcpy(tmp,line->string);
         strcat(tmp,sym);
         line->string=tmp;
         line->size++;
     }
     else{
-        line->string= (char*)malloc(strlen(sym));
+        line->string= (unsigned char*)malloc(strlen(sym));
         strcpy(line->string,sym);
         line->size++;
     }

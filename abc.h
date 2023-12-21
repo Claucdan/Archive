@@ -8,23 +8,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "string.h"
+typedef struct map map;
+typedef struct map_c map_c;
 
-
-typedef struct {
-    unsigned char *key;
+struct map{
+     char *key;
     int *data;
     int max_size;
     int size;
-}map;
-typedef struct {
-    unsigned char *key;
-    unsigned char **data;
+};
+ struct map_c{
+    char *key;
+    char **data;
     int max_size;
     int size;
-}map_c;
+};
 
 /*Find in map element this key*, if there is no such element, then we create it*/
-int find(map* main,unsigned char key){
+int find(map* main, char key){
     for(int i=0;i<main->size;i++){
         if(main->key[i]==key)
             return ++main->data[i];
@@ -37,7 +38,7 @@ int find(map* main,unsigned char key){
 
 
 /*Find in map element this key*, if there is no such element, then we create it*/
-unsigned char* find_c(map_c* main,unsigned char key){
+ char* find_c(map_c* main, char key){
     for(int i=0;i<main->size;i++){
         if(main->key[i]==key)
             return main->data;
@@ -50,7 +51,7 @@ unsigned char* find_c(map_c* main,unsigned char key){
 
 
 /*Find in map element this key* and insert in string*/
-void find_c_buf(map_c* main,unsigned char key,string* buf){
+void find_c_buf(map_c* main, char key,string* buf){
     for(int i=0;i<main->size;i++){
         if(main->key[i]==key){
             push_back(buf,main->data[i]);
@@ -78,9 +79,9 @@ void print_map_c(map_c* main){
 
 
 /*Add in map key this data*/
-void add(map_c* main,unsigned char* key,unsigned char* data){
+void add(map_c* main, char* key, char* data){
     main->key[main->size]=*key;
-    main->data[main->size]=(unsigned char *) malloc(strlen(data));
+    main->data[main->size]=( char *) malloc(strlen(data));
     strcpy(main->data[main->size],data);
     main->size++;
 }
@@ -89,7 +90,7 @@ void add(map_c* main,unsigned char* key,unsigned char* data){
 int create_map(map* main,int max_size){
     main->size=0;
     main->max_size=max_size;
-    main->key=(unsigned char*)malloc(max_size);
+    main->key=( char*)malloc(max_size);
     main->data=(int*)malloc(max_size);
 }
 
@@ -99,8 +100,8 @@ int create_map(map* main,int max_size){
 int create_map_c(map_c* main,int max_size){
     main->size=0;
     main->max_size=max_size;
-    main->key=(unsigned char*)malloc(max_size);
-    main->data=(unsigned char**)malloc(max_size);
+    main->key=( char*)malloc(max_size);
+    main->data=( char**)malloc(max_size);
 }
 
 

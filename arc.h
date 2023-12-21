@@ -7,7 +7,7 @@ typedef struct abc_of_file abc_of_file;
 
 struct arc{
     int count_of_file;
-    unsigned char** name_of_file;
+    char** name_of_file;
     int* offset_of_file;
 };
 struct arc_file{
@@ -17,7 +17,8 @@ struct arc_file{
     char*key_of_abc;
     char**code;
     int size_of_encode_text;
-    unsigned char* text;
+    unsigned int extra_bits;
+    char* text;
 };
 struct abc_of_file{
     char* key;
@@ -30,17 +31,19 @@ void read_from_file(string* line,FILE* input);
 void creat_map_of_string(map* abc,string* line);
 void creat_tree_of_Haffman(map_c* main,map* map_of_abc);
 void create_arc_file(FILE* file,arc_file* arcFile);
-void encode_original_text_to_bits(arc_file * file,map_c* main,string* original_text);
+void encode_original_text_to_bits(arc_file* file,map_c* main,string* original_text);
+void creat_mass_of_encode_message(arc_file* file,string* text);
+
 
 
 /*Reading basic archive data*/
 void read_arc(FILE* archive,arc* main){
     fseek(archive,0,SEEK_SET);
     fread(&main->count_of_file,sizeof(int),1,archive);
-    main->name_of_file=(unsigned char**)malloc(main->count_of_file);
+    main->name_of_file=(char**)malloc(main->count_of_file);
     main->offset_of_file=(int*)malloc(main->count_of_file);
     for(int i=0;i<main->count_of_file;i++){
-        main->name_of_file[i]=(unsigned char*) malloc(20);
+        main->name_of_file[i]=(char*) malloc(20);
     }
     for(int i=0;i<main->count_of_file;i++)
         fread(main->name_of_file[i],20,1,archive);
@@ -63,7 +66,7 @@ void read_file(FILE* archive,arc* main,struct arc_file* file){
         fread(file->code[i],size_of_code,1,archive);
     }
     fread(&file->size_of_encode_text, sizeof(int),1,archive);
-    file->text=(unsigned char*) malloc(file->size_of_encode_text);
+    file->text=(char*) malloc(file->size_of_encode_text);
     fread(file->text, file->size_of_encode_text,1,archive);
     for(int i=0;i<file->size_of_abc;i++){
         printf("%c %s\n",file->key_of_abc[i],file->code[i]);
@@ -130,10 +133,10 @@ void create_arc_file(FILE* file,arc_file* arcFile){
     read_from_file(&original_text,file);
     /*Creat map of sym*/
     creat_map_of_string(&map_of_abc,&original_text);
-    print_map(&map_of_abc);
+    //print_map(&map_of_abc);
     /*Creat map of encode string*/
     creat_tree_of_Haffman(&reverse_map,&map_of_abc);
-    print_map_c(&reverse_map);
+    //print_map_c(&reverse_map);
 
 
 
@@ -142,23 +145,47 @@ void create_arc_file(FILE* file,arc_file* arcFile){
 
     encode_original_text_to_bits(arcFile,&reverse_map,&original_text);
 
-
+    printf("check");
 
 }
 
+
+
+/*Creat message from text and map of keys*/
 void encode_original_text_to_bits(arc_file* file,map_c* main,string* original_text){
     string line;create_string(&line);
     for(int i=0;i<original_text->size;i++){
         find_c_buf(main,original_text->string[i],&line);
     }
-    printf("%s",line.string);
+    //printf("%s\n",line.string);
+    creat_mass_of_encode_message(file,&line);
 }
+/*Creat mass of bytes to write in file*/
+void creat_mass_of_encode_message(arc_file* file,string* text){
+    string to_write;create_string(&to_write);
+    char buffer=0;
+    char tmp[2];tmp[1]='\0';
+    for(int i=0;i< strlen(text->string);i++){
+        if(i%8==0 && i!=0){
+            tmp[0]=buffer;
+            push_back(&to_write,tmp);
+        }
+        if(text->string[i]=='1'){
+            buffer=(buffer<<1)|1;
+        }
+        else
+            buffer=(buffer<<1)|0;
 
-
-
-
-
-
+    }
+    if((file->extra_bits=(8-strlen(text->string)%8))!=8){
+        buffer=(buffer<<file->extra_bits)|0;
+    }
+    tmp[0]=buffer;
+    push_back(&to_write,tmp);
+    printf("%s",to_write.string);
+    file->size_of_encode_text= to_write.size;
+    file->text=to_write.string;
+}
 
 
 
@@ -173,6 +200,7 @@ void read_from_file(string* line,FILE* input){
     while((buffer_to_read[0]=fgetc(input)) != EOF){
         push_back(line,buffer_to_read);
     }
+    printf("%s\n",line->string);
 }
 /*Creat map of string*/
 void creat_map_of_string(map* abc,string* line){

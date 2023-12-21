@@ -4,11 +4,11 @@
 
 #ifndef TEST_C_STRING_H
 #define TEST_C_STRING_H
-
-typedef struct {
+typedef struct string string;
+struct string {
      char* string;
     int size;
-}string;
+};
 
 void push_back(string* line, char* sym){
     if(line->size!=0){

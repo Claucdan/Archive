@@ -17,10 +17,14 @@ int main(int argc, char *argv[]){
     file_of_archive.offset_of_file_in_archive= find_offset_of_file(&main,"host.txt");
     read_file(file,&main,&file_of_archive);*/
 
-
-    FILE* file= fopen("trash.txt","rb");
-    arc_file arcFile;
-    create_arc_file(file,&arcFile);
-
+    FILE* archive;
+   // write_archive(archive,argc-1,argv);
+    archive= fopen("test_of_write.arc","rb");
+    arc main;
+    read_arc(archive,&main);
+    arc_file file;
+    file.offset_of_file_in_archive=main.offset_of_file[0];
+    read_file(archive,&main,&file);
+    fclose(archive);
     return 0;
 }

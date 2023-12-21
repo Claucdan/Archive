@@ -34,7 +34,7 @@ void create_arc_file(FILE* file,arc_file* arcFile);
 void encode_original_text_to_bits(arc_file* file,map_c* main,string* original_text);
 void creat_mass_of_encode_message(arc_file* file,string* text);
 void copy_from_map_of_abc_to_arc_file_abc(arc_file* file,map* map_of_abc);
-
+void write_arc_file(FILE* output,arc_file* file);
 
 /*Reading basic archive data*/
 void read_arc(FILE* archive,arc* main){
@@ -56,16 +56,18 @@ void read_arc(FILE* archive,arc* main){
 void read_file(FILE* archive,arc* main,struct arc_file* file){
     fseek(archive,file->offset_of_file_in_archive,SEEK_SET);
     fread(&file->size_of_abc, sizeof(int),1,archive);
-    file->key_of_abc=(char*) malloc(file->size_of_abc);
-    file->frequency_of_key=(int*) malloc(file->size_of_abc);
-    int size_of_code;
+    file->key_of_abc=(char*) malloc(file->size_of_abc* sizeof(char));
+    file->frequency_of_key=(int*) malloc(file->size_of_abc* sizeof(int));
     for(int i=0;i<file->size_of_abc;i++){
         fread(&file->key_of_abc[i],1,1,archive);
         fread(&file->frequency_of_key[i], sizeof(int),1,archive);
     }
     fread(&file->size_of_encode_text, sizeof(int),1,archive);
-    file->text=(char*) malloc(file->size_of_encode_text);
-    fread(file->text, file->size_of_encode_text,1,archive);
+    fread(&file->extra_bits, sizeof(unsigned int),1,archive);
+    file->text=(char*) malloc(file->size_of_encode_text* sizeof(char));
+    for(int i=0;i<file->size_of_encode_text;i++) {
+        fread(&file->text[i],1,1,archive);
+    }
     for(int i=0;i<file->size_of_abc;i++){
         printf("%c %d\n",file->key_of_abc[i],file->frequency_of_key[i]);
     }
@@ -95,35 +97,63 @@ int find_offset_of_file(arc* main,char* name_of_file){
 
 
 /*Write files to archive*/
-void write(FILE* archiv,arc* main,int count,char **argv){
+void write_archive(FILE* archiv,int count,char *name[]){
     fseek(archiv,0,SEEK_SET);
     fwrite(&count, sizeof(int),1,archiv);
-    arc_file *arcFiles=(arc_file*) malloc(count);
+    arc_file *arcFiles=(arc_file*) malloc(count*sizeof(arc_file*));
 
 
     /*Write name of Files*/
     for(int i=0;i<count;i++){
         char *str=(char*) malloc(20);
-        strcpy(str,argv[i]);
+        strcpy(str,name[i+1]);
         fwrite(str,20,1,archiv);
         free(str);
     }
 
-
-
+    for(int i=0;i<count;i++){
+        FILE* file_to_copy= fopen(name[i+1],"rb");
+        create_arc_file(file_to_copy,&arcFiles[i]);
+        fclose(file_to_copy);
+    }
 
 
     /*Write offset of files*/
-    int start=4+20*count;
+    int start=4+20*count+4*count;
     for(int i=0;i<count;i++){
-
+        fwrite(&start, sizeof(int),1,archiv);
+        start+=arcFiles[i].size_of_all;
     }
     /*Write information of files*/
     for(int i=0;i<count;i++){
+        write_arc_file(archiv,&arcFiles[i]);
     }
+    fclose(archiv);
 }
 
 
+
+
+void write_arc_file(FILE* output,arc_file* file){
+    fwrite(&file->size_of_abc, sizeof(int),1,output);
+    for(int i=0;i<file->size_of_abc;i++){
+        fwrite(&file->key_of_abc[i],1,1,output);
+        fwrite(&file->frequency_of_key[i], sizeof(int),1,output);
+    }
+    fwrite(&file->size_of_encode_text, sizeof(int),1,output);
+    fwrite(&file->extra_bits, sizeof(unsigned int),1,output);
+    fwrite(file->text,file->size_of_encode_text,1,output);
+}
+
+
+
+
+
+
+
+
+
+/*Creat encode file what we put in archive*/
 void create_arc_file(FILE* file,arc_file* arcFile){
     fseek(file,0,SEEK_SET);
     string original_text;map map_of_abc;map_c reverse_map;
@@ -137,8 +167,15 @@ void create_arc_file(FILE* file,arc_file* arcFile){
     //print_map_c(&reverse_map);
     copy_from_map_of_abc_to_arc_file_abc(arcFile,&map_of_abc);
     encode_original_text_to_bits(arcFile,&reverse_map,&original_text);
+
+    arcFile->size_of_all= sizeof(int)+(sizeof(int)+1)* arcFile->size_of_abc+ sizeof(int)+sizeof(int)+ arcFile->size_of_encode_text;
     printf("check");
 }
+
+
+
+
+
 
 
 
@@ -148,13 +185,6 @@ void copy_from_map_of_abc_to_arc_file_abc(arc_file* file,map* map_of_abc){
     file->key_of_abc= map_of_abc->key;
     file->frequency_of_key=map_of_abc->data;
 }
-
-
-
-
-
-
-
 /*Creat message from text and map of keys*/
 void encode_original_text_to_bits(arc_file* file,map_c* main,string* original_text){
     string line;create_string(&line);
@@ -186,10 +216,15 @@ void creat_mass_of_encode_message(arc_file* file,string* text){
     }
     tmp[0]=buffer;
     push_back(&to_write,tmp);
-    printf("%s\n",to_write.string);
+    //printf("%s\n",to_write.string);
     file->size_of_encode_text= to_write.size;
     file->text=to_write.string;
 }
+
+
+
+
+
 
 
 
@@ -201,7 +236,7 @@ void read_from_file(string* line,FILE* input){
     while((buffer_to_read[0]=fgetc(input)) != EOF){
         push_back(line,buffer_to_read);
     }
-    printf("%s\n",line->string);
+    //printf("%s\n",line->string);
 }
 /*Creat map of string*/
 void creat_map_of_string(map* abc,string* line){

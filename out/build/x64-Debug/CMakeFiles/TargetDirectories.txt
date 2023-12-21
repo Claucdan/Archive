@@ -1,0 +1,3 @@
+C:/Users/dania/CLionProjects/test_c/out/build/x64-Debug/CMakeFiles/test_c.dir
+C:/Users/dania/CLionProjects/test_c/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/dania/CLionProjects/test_c/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

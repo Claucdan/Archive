@@ -14,8 +14,8 @@ struct arc_file{
     int size_of_all;
     int offset_of_file_in_archive;
     int size_of_abc;
-    char*key_of_abc;
-    char**code;
+    char* key_of_abc;
+    int* frequency_of_key;
     int size_of_encode_text;
     unsigned int extra_bits;
     char* text;
@@ -33,7 +33,7 @@ void creat_tree_of_Haffman(map_c* main,map* map_of_abc);
 void create_arc_file(FILE* file,arc_file* arcFile);
 void encode_original_text_to_bits(arc_file* file,map_c* main,string* original_text);
 void creat_mass_of_encode_message(arc_file* file,string* text);
-
+void copy_from_map_of_abc_to_arc_file_abc(arc_file* file,map* map_of_abc);
 
 
 /*Reading basic archive data*/
@@ -57,19 +57,17 @@ void read_file(FILE* archive,arc* main,struct arc_file* file){
     fseek(archive,file->offset_of_file_in_archive,SEEK_SET);
     fread(&file->size_of_abc, sizeof(int),1,archive);
     file->key_of_abc=(char*) malloc(file->size_of_abc);
-    file->code=(char**) malloc(file->size_of_abc);
+    file->frequency_of_key=(int*) malloc(file->size_of_abc);
     int size_of_code;
     for(int i=0;i<file->size_of_abc;i++){
         fread(&file->key_of_abc[i],1,1,archive);
-        fread(&size_of_code, sizeof(int),1,archive);
-        file->code[i]=(char*) malloc(size_of_code+1);
-        fread(file->code[i],size_of_code,1,archive);
+        fread(&file->frequency_of_key[i], sizeof(int),1,archive);
     }
     fread(&file->size_of_encode_text, sizeof(int),1,archive);
     file->text=(char*) malloc(file->size_of_encode_text);
     fread(file->text, file->size_of_encode_text,1,archive);
     for(int i=0;i<file->size_of_abc;i++){
-        printf("%c %s\n",file->key_of_abc[i],file->code[i]);
+        printf("%c %d\n",file->key_of_abc[i],file->frequency_of_key[i]);
     }
     printf("%s\n",file->text);
 }
@@ -148,6 +146,22 @@ void create_arc_file(FILE* file,arc_file* arcFile){
     printf("check");
 
 }
+
+
+
+/*Copy from map to abc of file in archive*/
+void copy_from_map_of_abc_to_arc_file_abc(arc_file* file,map* map_of_abc){
+    file->key_of_abc=(char*)malloc(map_of_abc->size);
+    file->frequency_of_key=(int*)malloc(map_of_abc->size);
+    for(int i=0;i<map_of_abc->size;i++){
+        file->key_of_abc[i]=map_of_abc->key[i];
+        file->frequency_of_key[i]=map_of_abc->data[i];
+    }
+}
+
+
+
+
 
 
 

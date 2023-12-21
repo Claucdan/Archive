@@ -30,6 +30,14 @@ int find(map* main, char key){
         if(main->key[i]==key)
             return ++main->data[i];
     }
+    if(main->size!=0){
+        main->key=(char*) realloc(main->key,main->size+1);
+        main->data=(int*) realloc(main->data,main->size* sizeof(int)+ sizeof(int));
+    }
+    else{
+        main->key=(char*) malloc(1);
+        main->data=(int*) malloc(sizeof(int));
+    }
     main->key[main->size]=key;
     main->data[main->size]=1;
     main->size++;
@@ -80,8 +88,16 @@ void print_map_c(map_c* main){
 
 /*Add in map key this data*/
 void add(map_c* main, char* key, char* data){
+    if(main->size!=0){
+        main->key=(char*) realloc(main->key,main->size*sizeof(char*)+sizeof(char*));
+        main->data=(char**) realloc(main->data,main->size*sizeof(char**)+sizeof(char**));
+    }
+    else{
+        main->key=(char*) malloc(sizeof(char*));
+        main->data=(char**) malloc(sizeof(char**));
+    }
     main->key[main->size]=*key;
-    main->data[main->size]=( char *) malloc(strlen(data));
+    main->data[main->size]=(char*) malloc(strlen(data)+1);
     strcpy(main->data[main->size],data);
     main->size++;
 }
@@ -90,8 +106,6 @@ void add(map_c* main, char* key, char* data){
 int create_map(map* main,int max_size){
     main->size=0;
     main->max_size=max_size;
-    main->key=( char*)malloc(max_size);
-    main->data=(int*)malloc(max_size);
 }
 
 
@@ -100,8 +114,6 @@ int create_map(map* main,int max_size){
 int create_map_c(map_c* main,int max_size){
     main->size=0;
     main->max_size=max_size;
-    main->key=( char*)malloc(max_size);
-    main->data=( char**)malloc(max_size);
 }
 
 

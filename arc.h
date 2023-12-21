@@ -152,12 +152,8 @@ void create_arc_file(FILE* file,arc_file* arcFile){
 /*Copy from map to abc of file in archive*/
 void copy_from_map_of_abc_to_arc_file_abc(arc_file* file,map* map_of_abc){
     file->size_of_abc=map_of_abc->size;
-    file->key_of_abc=(char*)malloc(map_of_abc->size);
-    file->frequency_of_key=(int*)malloc(map_of_abc->size);
-    for(int i=0;i<map_of_abc->size;i++){
-        file->key_of_abc[i]=map_of_abc->key[i];
-        file->frequency_of_key[i]=map_of_abc->data[i];
-    }
+    file->key_of_abc= map_of_abc->key;
+    file->frequency_of_key=map_of_abc->data;
 }
 
 

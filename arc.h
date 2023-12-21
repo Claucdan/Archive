@@ -147,9 +147,6 @@ void create_arc_file(FILE* file,arc_file* arcFile){
 
 }
 
-void encode_original_text_to_bits(FILE *file,map_c* main){
-
-}
 
 
 

@@ -124,17 +124,17 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "encode.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
 			"path" : "string.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"path" : "arc.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "decode_arc_file.h",
 			"sourceGroupIndex" : 1
 		}
 	],

@@ -77,12 +77,6 @@ void read_file(FILE* archive,arc* main,struct arc_file* file){
 
 
 
-
-
-
-
-
-
 /*Find offset of chosen file*/
 int find_offset_of_file(arc* main,char* name_of_file){
     for(int i=0;i<main->count_of_file;i++){
@@ -127,9 +121,6 @@ void write_archive(FILE* archiv,int count,char *name[]){
     }
     fclose(archiv);
 }
-
-
-
 /*Write arc file to archive*/
 void write_arc_file(FILE* output,arc_file* file){
     fwrite(&file->size_of_abc, sizeof(int),1,output);
@@ -141,15 +132,6 @@ void write_arc_file(FILE* output,arc_file* file){
     fwrite(&file->extra_bits, sizeof(unsigned int),1,output);
     fwrite(file->text,file->size_of_encode_text,1,output);
 }
-
-
-
-
-
-
-
-
-
 /*Creat encode file what we put in archive*/
 void create_arc_file(FILE* file,arc_file* arcFile){
     fseek(file,0,SEEK_SET);
@@ -168,10 +150,6 @@ void create_arc_file(FILE* file,arc_file* arcFile){
     arcFile->size_of_all= sizeof(int)+(sizeof(int)+1)* arcFile->size_of_abc+ sizeof(int)+sizeof(int)+ arcFile->size_of_encode_text;
     printf("check");
 }
-
-
-
-
 
 
 

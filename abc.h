@@ -8,22 +8,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "string.h"
+
 typedef struct map map;
 typedef struct map_c map_c;
-
 struct map{
      char *key;
     int *data;
     int max_size;
     int size;
 };
- struct map_c{
+struct map_c{
     char *key;
     char **data;
     int max_size;
     int size;
 };
-
 /*Find in map element this key*, if there is no such element, then we create it*/
 int find(map* main, char key){
     for(int i=0;i<main->size;i++){
@@ -43,10 +42,8 @@ int find(map* main, char key){
     main->size++;
     return 1;
 }
-
-
 /*Find in map element this key*, if there is no such element, then we create it*/
- char* find_c(map_c* main, char key){
+char* find_c(map_c* main, char key){
     for(int i=0;i<main->size;i++){
         if(main->key[i]==key)
             return main->data;
@@ -56,8 +53,6 @@ int find(map* main, char key){
     main->size++;
     return "";
 }
-
-
 /*Find in map element this key* and insert in string*/
 void find_c_buf(map_c* main, char key,string* buf){
     for(int i=0;i<main->size;i++){
@@ -67,25 +62,18 @@ void find_c_buf(map_c* main, char key,string* buf){
         }
     }
 }
-
-
 /*Print all key this data*/
 void print_map(map* main){
     for(int i=0;i<main->size;i++){
         printf("%c %d\n",main->key[i],main->data[i]);
     }
 }
-
-
 /*Print all key this data*/
 void print_map_c(map_c* main){
     for(int i=0;i<main->size;i++){
         printf("%c %s\n",main->key[i],main->data[i]);
     }
 }
-
-
-
 /*Add in map key this data*/
 void add(map_c* main, char* key, char* data){
     if(main->size!=0){
@@ -101,19 +89,22 @@ void add(map_c* main, char* key, char* data){
     strcpy(main->data[main->size],data);
     main->size++;
 }
-
 /*Constructor of map*/
 int create_map(map* main,int max_size){
     main->size=0;
     main->max_size=max_size;
 }
-
-
-
 /*Constructor of map_c*/
 int create_map_c(map_c* main,int max_size){
     main->size=0;
     main->max_size=max_size;
+}
+char find_data_in_map_c(map_c* main,char* sym){
+    for(int i=0;i<main->size;i++){
+        if(!strcmp(main->data[i],sym))
+            return main->key[i];
+    }
+    return '\0';
 }
 
 

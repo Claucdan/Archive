@@ -93,9 +93,6 @@ int find_offset_of_file(arc* main,char* name_of_file){
     //exit(-2);
     return 0;
 }
-
-
-
 /*Write files to archive*/
 void write_archive(FILE* archiv,int count,char *name[]){
     fseek(archiv,0,SEEK_SET);
@@ -133,7 +130,7 @@ void write_archive(FILE* archiv,int count,char *name[]){
 
 
 
-
+/*Write arc file to archive*/
 void write_arc_file(FILE* output,arc_file* file){
     fwrite(&file->size_of_abc, sizeof(int),1,output);
     for(int i=0;i<file->size_of_abc;i++){

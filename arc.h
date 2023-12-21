@@ -135,16 +135,9 @@ void create_arc_file(FILE* file,arc_file* arcFile){
     /*Creat map of encode string*/
     creat_tree_of_Haffman(&reverse_map,&map_of_abc);
     //print_map_c(&reverse_map);
-
-
-
-
-
     copy_from_map_of_abc_to_arc_file_abc(arcFile,&map_of_abc);
     encode_original_text_to_bits(arcFile,&reverse_map,&original_text);
-
     printf("check");
-
 }
 
 
@@ -193,7 +186,7 @@ void creat_mass_of_encode_message(arc_file* file,string* text){
     }
     tmp[0]=buffer;
     push_back(&to_write,tmp);
-    printf("%s",to_write.string);
+    printf("%s\n",to_write.string);
     file->size_of_encode_text= to_write.size;
     file->text=to_write.string;
 }

@@ -30,7 +30,7 @@ void read_from_file(string* line,FILE* input);
 void creat_map_of_string(map* abc,string* line);
 void creat_tree_of_Haffman(map_c* main,map* map_of_abc);
 void create_arc_file(FILE* file,arc_file* arcFile);
-void encode_original_text_to_bits(FILE* file,map_c* main);
+void encode_original_text_to_bits(arc_file * file,map_c* main,string* original_text);
 
 
 /*Reading basic archive data*/
@@ -140,15 +140,18 @@ void create_arc_file(FILE* file,arc_file* arcFile){
 
     arcFile->size_of_abc=reverse_map.size;
 
-    
-
+    encode_original_text_to_bits(arcFile,&reverse_map,&original_text);
 
 
 
 }
 
-void encode_original_text_to_bits(FILE *file,map_c* main){
-
+void encode_original_text_to_bits(arc_file* file,map_c* main,string* original_text){
+    string line;create_string(&line);
+    for(int i=0;i<original_text->size;i++){
+        find_c_buf(main,original_text->string[i],&line);
+    }
+    printf("%s",line.string);
 }
 
 

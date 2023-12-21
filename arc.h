@@ -139,8 +139,8 @@ void create_arc_file(FILE* file,arc_file* arcFile){
 
 
 
-    arcFile->size_of_abc=reverse_map.size;
 
+    copy_from_map_of_abc_to_arc_file_abc(arcFile,&map_of_abc);
     encode_original_text_to_bits(arcFile,&reverse_map,&original_text);
 
     printf("check");
@@ -151,6 +151,7 @@ void create_arc_file(FILE* file,arc_file* arcFile){
 
 /*Copy from map to abc of file in archive*/
 void copy_from_map_of_abc_to_arc_file_abc(arc_file* file,map* map_of_abc){
+    file->size_of_abc=map_of_abc->size;
     file->key_of_abc=(char*)malloc(map_of_abc->size);
     file->frequency_of_key=(int*)malloc(map_of_abc->size);
     for(int i=0;i<map_of_abc->size;i++){

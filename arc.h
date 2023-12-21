@@ -189,9 +189,6 @@ void creat_mass_of_encode_message(arc_file* file,string* text){
 
 
 
-
-
-
 /*Read information from file to string*/
 void read_from_file(string* line,FILE* input){
     create_string(line);

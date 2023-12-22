@@ -1,0 +1,1 @@
+Enumerations(Enum) in the C language. enum is an enumerable type. Enumerations are used to declare symbolic names, which are integer constants. That is, the enumeration type is, in fact, an integer type, and these constants can be used wherever integer types can be used.

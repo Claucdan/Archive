@@ -23,17 +23,19 @@ void from_char_bytes_to_string(char* text,int* size,int* extra_bits,string* byte
         else
             bytes->string[i]='0';
     }
-    printf("%s\n",bytes->string);
 }
 void decode_arc_file(arc_file* file_to_decode,FILE* file_to_write){
     map_c reverse_map;
     map map_of_abc;
     creat_map_from_arc_file(&map_of_abc,file_to_decode);
+    printf("Completed work [****////////////////]\n");
     creat_tree_of_Haffman(&reverse_map,&map_of_abc);
+    printf("Completed work [*****///////////////]\n");
     string encode_text;
     from_char_bytes_to_string(file_to_decode->text,&file_to_decode->size_of_encode_text,(int*)&file_to_decode->extra_bits,&encode_text);
     string buffer,original_text;
     create_string(&buffer);create_string(&original_text);
+    printf("Completed work [*******/////////////]\n");
     char tmp[2];tmp[1]='\0';
     for(int i=0;i<encode_text.size;i++){
         tmp[0]=encode_text.string[i];
@@ -44,9 +46,11 @@ void decode_arc_file(arc_file* file_to_decode,FILE* file_to_write){
             clear(&buffer);
         }
     }
+    printf("Completed work [************////////]\n");
     fseek(file_to_write,0,SEEK_SET);
     for(int i=0;i<original_text.size;i++){
         fwrite(&original_text.string[i],1,1,file_to_write);
     }
+    printf("Completed work [******************//]\n");
 }
 #endif //TEST_C_DECODE_ARC_FILE_H

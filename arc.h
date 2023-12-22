@@ -3,7 +3,6 @@
 
 typedef struct arc arc;
 typedef struct arc_file arc_file;
-typedef struct abc_of_file abc_of_file;
 
 struct arc{
     int count_of_file;
@@ -20,11 +19,7 @@ struct arc_file{
     unsigned int extra_bits;
     char* text;
 };
-struct abc_of_file{
-    char* key;
-    int* size_of_code;
-    char** code
-};
+
 
 
 void read_from_file(string* line,FILE* input);
@@ -48,9 +43,6 @@ void read_arc(FILE* archive,arc* main){
     for(int i=0;i<main->count_of_file;i++)
         fread(main->name_of_file[i],20,1,archive);
     fread(main->offset_of_file, sizeof(int),main->count_of_file,archive);
-    for(int i=0;i<main->count_of_file;i++){
-        printf("%s %d\n",main->name_of_file[i],main->offset_of_file[i]);
-    }
 }
 /*Read basic file data*/
 void read_file(FILE* archive,arc* main,struct arc_file* file){
@@ -68,10 +60,6 @@ void read_file(FILE* archive,arc* main,struct arc_file* file){
     for(int i=0;i<file->size_of_encode_text;i++) {
         fread(&file->text[i],1,1,archive);
     }
-    for(int i=0;i<file->size_of_abc;i++){
-        printf("%c %d\n",file->key_of_abc[i],file->frequency_of_key[i]);
-    }
-    printf("%s\n",file->text);
 }
 
 
@@ -92,22 +80,21 @@ void write_archive(FILE* archiv,int count,char *name[]){
     fseek(archiv,0,SEEK_SET);
     fwrite(&count, sizeof(int),1,archiv);
     arc_file *arcFiles=(arc_file*) malloc(count*sizeof(arc_file*));
-
+    printf("Completed work [**//////////////////]\n");
 
     /*Write name of Files*/
     for(int i=0;i<count;i++){
         char *str=(char*) malloc(20);
-        strcpy(str,name[i+1]);
+        strcpy(str,name[i]);
         fwrite(str,20,1,archiv);
         free(str);
     }
-
+    printf("Completed work [***/////////////////]\n");
     for(int i=0;i<count;i++){
-        FILE* file_to_copy= fopen(name[i+1],"rb");
+        FILE* file_to_copy= fopen(name[i],"rb");
         create_arc_file(file_to_copy,&arcFiles[i]);
-        fclose(file_to_copy);
     }
-
+    printf("Completed work [**********//////////]\n");
 
     /*Write offset of files*/
     int start=4+20*count+4*count;
@@ -115,10 +102,12 @@ void write_archive(FILE* archiv,int count,char *name[]){
         fwrite(&start, sizeof(int),1,archiv);
         start+=arcFiles[i].size_of_all;
     }
+    printf("Completed work [**************//////]\n");
     /*Write information of files*/
     for(int i=0;i<count;i++){
         write_arc_file(archiv,&arcFiles[i]);
     }
+    printf("Completed work [******************//]\n");
     fclose(archiv);
 }
 /*Write arc file to archive*/
@@ -148,7 +137,7 @@ void create_arc_file(FILE* file,arc_file* arcFile){
     encode_original_text_to_bits(arcFile,&reverse_map,&original_text);
 
     arcFile->size_of_all= sizeof(int)+(sizeof(int)+1)* arcFile->size_of_abc+ sizeof(int)+sizeof(int)+ arcFile->size_of_encode_text;
-    printf("check");
+    //printf("check");
 }
 
 
